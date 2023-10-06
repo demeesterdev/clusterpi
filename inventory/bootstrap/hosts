@@ -1,0 +1,11 @@
+[raspberry_pi_reserved_adresses]
+192.168.68.221
+192.168.68.222
+192.168.68.223
+192.168.68.224
+
+[raspbian_fresh:children]
+raspberry_pi_reserved_adresses
+
+[raspberry:children]
+raspberry_pi_reserved_adresses

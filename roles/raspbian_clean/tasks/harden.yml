@@ -1,0 +1,65 @@
+---
+- name: gather facts
+  ansible.builtin.setup:
+
+- name: create group ssh-users
+  become: true
+  ansible.builtin.group:
+    name: ssh-users
+    state: present
+
+- name: "create user {{user_identity}}"
+  become: true
+  user:
+    name: "{{user_identity}}"
+    groups: sudo, ssh-users
+    shell: /bin/bash
+    createhome: yes
+
+- name: Set authorized keys taken from github
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{user_identity}}"
+    state: present
+    key: "{{ lookup('url', 'https://github.com/' + github_identity + '.keys', split_lines=False) }}"
+
+- name: "allow '{{user_identity}}' group to have passwordless sudo"
+  become: true
+  lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: "^%{{user_identity}}"
+        line: "%{{user_identity}} ALL=(ALL) NOPASSWD: ALL"
+        validate: visudo -cf %s
+
+- name: "set login shell for root to 'nologin'"
+  become: true
+  lineinfile:
+        dest: /etc/passwd
+        state: present
+        regexp: "^root:"
+        line: "root:x:0:0:root:/root:/sbin/nologin"
+
+- name: "ssh configuration hardening"
+  become: true
+  lineinfile:
+        dest: /etc/ssh/sshd_config
+        state: present
+        regexp: "{{item.regexp}}"
+        line: "{{item.line}}"
+  loop:
+    - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin no'}
+    - { regexp: '^#PubkeyAuthentications', line: 'PubkeyAuthentication yes'}
+    - { regexp: '^#PasswordAuthentication', line: 'PasswordAuthentication no'}
+    - { regexp: '^#UsePAM', line: 'UsePAM no'}
+    - { regexp: '^#X11Forwarding', line: 'X11Forwarding no'}
+    - { regexp: '^#AllowGroupsh-users', line: 'AllowGroups ssh-users'}
+  notify:
+    restart-ssh
+
+
+
+
+  
+
+

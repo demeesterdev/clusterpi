@@ -1,0 +1,11 @@
+---
+- name: reboot
+  reboot:
+  become: true
+
+- name: restart-ssh
+  become: true
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  

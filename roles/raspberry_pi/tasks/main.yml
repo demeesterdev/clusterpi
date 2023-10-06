@@ -1,0 +1,8 @@
+---
+- name: Test for Raspberry PI and Raspbian.
+  include_tasks: "test.yml"
+
+- name: Run Raspbian Bootstrap
+  include_tasks: "bootstrap.yml"
+  when:
+  - raspberry_pi

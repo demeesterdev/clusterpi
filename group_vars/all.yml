@@ -1,0 +1,14 @@
+---
+raspberries:
+  - name: picontrol01
+    serial: 1000000088bb518d
+  - name: pinode01 
+    serial: 100000007fff723d
+  - name: pinode02
+    serial: 100000006d5ff2f5
+  - name: pinode03
+    serial: 100000006301db64
+
+user_identity: demeesterdev
+github_identity: demeesterdev
+ansible_ssh_user: demeesterdev

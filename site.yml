@@ -1,0 +1,14 @@
+---
+# setup authentication and users for raspberry
+- hosts: raspbian_fresh
+  gather_facts: no
+  roles: 
+    - role: raspbian_clean
+
+- hosts: raspberry
+  remote_user: demeesterdev
+  roles: 
+    - role: raspbian
+
+
+  

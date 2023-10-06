@@ -1,0 +1,15 @@
+---
+- name: Test for connection to raspbian
+  include_tasks: "test.yml"
+
+- name: Harden Raspbian
+  include_tasks: "harden.yml"
+  when:
+    - connected_raspbian
+
+- name: Configure system
+  include_tasks: "configure.yml"
+  when:
+    - connected_raspbian
+
+    
